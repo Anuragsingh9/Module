@@ -23,7 +23,7 @@ class TestController extends Controller
      */
     public function create(Request $request)
     {
-
+            dd("ok");
         return view('cocktail::create');
     }
 

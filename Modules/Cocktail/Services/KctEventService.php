@@ -2,10 +2,18 @@
 
 namespace Modules\Cocktail\Services;
 
-use App\Services\Service;
+//use App\Services\Service;
 use Modules\Events\Entities\Event;
 
 class KctEventService extends Service {
+    public static function getInstance()
+    {
+        static $instance = NULL;
+        if (NULL === $instance) {
+            $instance = new static();
+        }
+        return $instance;
+    }
     /**
      * to set the fields in given column like
      * column = [
