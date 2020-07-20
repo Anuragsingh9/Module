@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Http\Requests;
-use App\Rules\Alpha;
+namespace Modules\Cocktail\Http\Requests;
+use Modules\Cocktail\Rules\Alpha;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
@@ -9,6 +9,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class EventSpaceRequest extends FormRequest
 {
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,6 +18,7 @@ class EventSpaceRequest extends FormRequest
      */
     public function authorize()
     {
+
         return true;
     }
 
@@ -31,7 +34,6 @@ class EventSpaceRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             'space_name'            =>['required',
                                         'min:' . config('cocktail.validations.space.space_name_min'),
@@ -55,6 +57,7 @@ class EventSpaceRequest extends FormRequest
             // // 'event_uuid'            =>['required',Rule::exists('event_space', 'event_uuid')->where(function ($query) {
             // //                         $query->whereNull('deleted_at');
             // })],
+            'hosts'                 =>['required','array','min:2','nullable'],
             
 
         ];

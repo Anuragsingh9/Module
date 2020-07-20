@@ -1,5 +1,5 @@
 <?php
-namespace App\Traits;
+namespace Modules\Cocktail\Traits;
 use Ramsey\Uuid\Uuid;
 
 trait Uuids {

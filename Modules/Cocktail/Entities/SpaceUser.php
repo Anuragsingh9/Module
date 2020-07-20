@@ -11,5 +11,7 @@ class SpaceUser extends Model
     protected $uuidColumns=['space_uuid','current_conversation_uuid'];
     protected $table = 'event_space_users';
     protected $fillable = ['space_uuid','user_id','role','current_conversation_uuid'];
+
+
     
 }

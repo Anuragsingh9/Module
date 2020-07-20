@@ -2,6 +2,7 @@
 
 namespace Modules\Cocktail\Entities;
 
+use Modules\Cocktail\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 //use App\Traits\Uuids;
 

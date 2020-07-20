@@ -2,11 +2,13 @@
 
 namespace Modules\Cocktail\Http\Controllers;
 
+use App\Http\Requests\EventUserRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Cocktail\Entities\EventUser;
 use Modules\Cocktail\Http\Requests\EventBlueJeansRequest;
 use Modules\Cocktail\Http\Requests\EventKeepContactRequest;
 use Modules\Cocktail\Http\Requests\EventRegistaionFormRequest;
@@ -149,17 +151,16 @@ class KctEventController extends Controller {
         }
     }
     public function check(Request $request){
-//        dd("ok");
         $fname=$request->get('fname');
         $lname=$request->get('lname');
         $email=$request->get('email');
         $us=Auth::user()->id;
-//        dd("okkk");
-        dd($us);
         $user= User::where('fname', 'LIKE',"$fname%")->orWhere('lname', 'LIKE',"$lname%")
             ->orWhere('email','LIKE',"$email%")->get();
         dd($user);
     }
+
+
 
     
     

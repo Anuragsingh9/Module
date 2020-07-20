@@ -30,4 +30,15 @@ class AuthorizationService extends Service {
 
 
     }
+
+    public function isUserEventUser($eventId){
+        $userId=Auth::user()->id;
+
+        $UserEvent=EventUser::where('user_id',$userId)->where('event_uuid',$eventId)->first();
+
+        if($UserEvent){
+            return "ok";
+        }
+
+    }
 }

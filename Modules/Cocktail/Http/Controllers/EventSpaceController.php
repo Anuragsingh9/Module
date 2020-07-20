@@ -32,7 +32,7 @@ class EventSpaceController extends Controller {
     protected $service;
 
     public function __construct() {
-        $this->service = EventSpaceService::getInstance();;
+        $this->service = EventSpaceService::getInstance();
     }
 
     public function store(EventSpaceCreateRequest $request) {
@@ -41,6 +41,19 @@ class EventSpaceController extends Controller {
             $dataService = DataService::getInstance();
             $param = $dataService->prepareSpaceCreateParam($request); // it will prepare array which gonna pass in model
             $event = $this->service->create($param);
+
+            foreach($request->hosts as $host) {
+                $param = [
+                    $host = [
+                        'user_id' => $request->user_id,
+                        'space_uuid' => $request->space_uuid,
+                        'role' => $request->role,
+                        'host' => $request->hosts,
+                    ],
+                ];
+            }
+                $event= $this->service->create($param);
+
             DB::connection('tenant')->commit();
             return (new EventSpaceResource($event))->additional(['status' => TRUE]);
         } catch (Exception $e) {

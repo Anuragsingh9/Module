@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\Cocktail\Services\AuthorizationService;
 
 class EventUserRequest extends FormRequest
 {
@@ -13,7 +14,8 @@ class EventUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        AuthorizationService::getInstance()->isUserBelongsToEvent($this->eventId);
+
     }
 
     /**
@@ -25,6 +27,7 @@ class EventUserRequest extends FormRequest
     {
 
         return [
+            'event_uuid'=>'required',
             'is_presenter'=>'required_without:moderator|nullable',
             'is_moderator'=>'required_without:presenter|nullable'        
         ];
