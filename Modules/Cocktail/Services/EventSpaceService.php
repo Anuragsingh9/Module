@@ -22,7 +22,14 @@ class EventSpaceService extends Service {
      */
     public function create($param,$userId,$spaceUuid) {
         $event = EventSpace::create($param);
-        $this->addUserToSpace(array ($userId), $spaceUuid);
+        foreach($param['hosts'] as $host) {
+            $hosts[] = [
+                'user_id' => $host,
+                'space_uuid' => $spaceUuid,
+                'role' => 1
+            ];
+        }
+        SpaceUser::insert($hosts);
         if (!$event)
             throw new Exception();  // to throw the error instead of null so proper message can be shown// to throw exception so that proper msg can be shown
         return $event;
@@ -61,19 +68,7 @@ class EventSpaceService extends Service {
             'space_uuid'=>$spaceUuid,
         ];
         $addUser = EventSpace::create($param);
-        foreach($request->hosts as $host){
-            $param=[
-                $host=[
-                    $user_id ='user_id'=>$request->user_id,
-                    $spaceId ='space_uuid'=>$request->space_uuid,
-                    $role    ='role'=> 1,
-                    $hosts ='host' => $request->hosts,
-                ],
-            ];
-            SpaceUser::insert(
-                ['user_id' => $user_id, 'space_uuid' => $spaceId,'role'=> $role,'host'=>$hosts],
-            );
-        }
+
         if (!$addUser)
             throw new Exception();  // to throw the error instead of null so proper message can be shown// to throw exception so that proper msg can be shown
         return $addUser;
