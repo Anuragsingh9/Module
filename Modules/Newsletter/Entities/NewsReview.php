@@ -22,7 +22,9 @@ class NewsReview extends Model {
     public function reviewable() {
         return $this->morphTo();
     }
-    
+     public function news(){
+         return $this->belongsTo(News::class);
+     }
     public function reviewer() {
         return $this->hasOne(User::class, 'id', 'reviewed_by');
     }

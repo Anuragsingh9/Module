@@ -20,7 +20,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'newsletter', 'namespace' => 'M
 
 //            Route::put('review/update/description', 'ReviewController@addDescription'); // form request
 //            Route::put('review/update/send', 'ReviewController@send'); // form request
-//            Route::get('review/count', 'ReviewController@getReviewsCount');
+            Route::get('review/count', 'ReviewController@getReviewsCount');
         });
     });
 });

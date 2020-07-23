@@ -16,12 +16,14 @@ class News extends Model {
 
     public function reviews() {
         return $this->morphMany(NewsReview::class, 'reviewable');
+//        return $this->hasMany(NewsReview::class,'reviewable_id');
     }
 
     public function reviewsCount() {
         return $this->morphMany(NewsReview::class, 'reviewable')
             ->selectRaw('review_reaction,COUNT(review_reaction) as reactions,reviewable_id')
             ->groupBy('review_reaction');
+//            ->groupBy('reviewable_id');
     }
 
 }

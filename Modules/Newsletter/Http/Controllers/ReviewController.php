@@ -45,13 +45,10 @@ class ReviewController extends Controller {
     }
 
     public function newsReview($news){
-        try {
-            $news = NewsReview::with('news')->find($news);
-            if ($news) {
-                return ReviewResource::collection($news->reviews)->additional(['status' => TRUE]);
-            }
-            return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error'], 500);
 
+        try {
+            $news = News::with('reviews')->find($news);
+            return $news;
         } catch (\Exception $e) {
             return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error','error' => $e->getMessage()], 500);
         }
@@ -99,18 +96,25 @@ class ReviewController extends Controller {
     
     public function getReviewsCount(Request $request) {
         try {
+//            $news=News::get(['id']);
+//            return $news;
+
+//            dd("ok");
             $names = ['bad', 'good', 'excellent']; // so $result[$name[$query->review_reaction]] become $result['excellent'] or $result['good']
-            $result = ['excellent' => 0, 'good' => 0, 'bad' => 0];
-            $news = News::with('reviewsCount')->find($request->news_id);
-            if ($news)
-                $news->reviewsCount->map(function ($var) use (&$result, $names) {
+            $result = ['excellent' => 3, 'good' => 2, 'bad' => 1];
+            $newss = News::with('reviewsCount')->find($request->news_id);
+//            return $newss;
+            if ($newss)
+                $newss->reviewsCount->map(function ($var) use (&$result, $names) {
                     if (isset($names[$var->review_reaction])) {
                         $result[$names[$var->review_reaction]] = $var->reactions;
                     }
                 });
+//            $nr=array_merge($news,$newss);
+//            return $nr;
             return response()->json(['status' => TRUE, 'data' => $result], 200);
         } catch (\Exception $e) {
-            return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error'], 500);
+            return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error','error' => $e->getMessage()], 500);
         }
     }
     
