@@ -5,6 +5,7 @@ namespace Modules\Newsletter\Entities;
 use Brexis\LaravelWorkflow\Traits\WorkflowTrait;
 //use Hyn\Tenancy\Abstracts\TenantModel as TenancyModel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class News extends Model {
     use WorkflowTrait;
@@ -19,11 +20,21 @@ class News extends Model {
 //        return $this->hasMany(NewsReview::class,'reviewable_id');
     }
 
-    public function reviewsCount() {
+
+//    public function reviewsCount() {
+//        return $this->morphMany(NewsReview::class, 'reviewable')
+//            ->select('review_reaction', 'reviewable_id', DB::raw('COUNT(review_reaction) as reviews_count'))
+//            ->groupBy('reviewable_id', 'review_reaction');
+//    }
+    public function reviewsCountByCategory() {
         return $this->morphMany(NewsReview::class, 'reviewable')
-            ->selectRaw('review_reaction,COUNT(review_reaction) as reactions,reviewable_id')
-            ->groupBy('review_reaction');
-//            ->groupBy('reviewable_id');
+            ->select(
+                'reviewable_id',
+                DB::raw("COUNT(CASE WHEN review_reaction=1 THEN 1 ELSE NULL END) as review_bad"),
+                DB::raw("COUNT(CASE WHEN review_reaction=2 THEN 1 ELSE NULL END) as review_average"),
+                DB::raw("COUNT(CASE WHEN review_reaction=3 THEN 1 ELSE NULL END) as review_good")
+            )
+            ->groupBy('reviewable_id');
     }
 
 }

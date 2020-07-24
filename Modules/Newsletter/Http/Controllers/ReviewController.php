@@ -15,6 +15,7 @@ use Modules\Newsletter\Http\Requests\ReviewAddRequest;
 use Modules\Newsletter\Http\Requests\ReviewDescriptionRequest;
 use Modules\Newsletter\Http\Requests\ReviewSendRequest;
 use Modules\Newsletter\Services\ReviewService;
+use Modules\Newsletter\Transformers\NewsResource;
 use Modules\Newsletter\Transformers\ReviewResource;
 
 class ReviewController extends Controller {
@@ -24,7 +25,7 @@ class ReviewController extends Controller {
         $this->service = ReviewService::getInstance();
     }
     
-    public function store(ReviewAddRequest $request) {
+    public function store(ReviewAddRequest $request,$news) {
         try {
             DB::beginTransaction();
 
@@ -32,7 +33,7 @@ class ReviewController extends Controller {
                 ['review_reaction' => $request->review_reaction,
                  'is_visible'      => 1, //  as requirement says send when click on send button
                  'reviewed_by'     => 1,
-                 'reviewable_id'   => $request->news_id,
+                 'reviewable_id'   => $news,
                  'reviewable_type' => News::class,
                 ];
             $review = $this->service->create($param, $request->news_id);
@@ -96,22 +97,9 @@ class ReviewController extends Controller {
     
     public function getReviewsCount(Request $request) {
         try {
-//            $news=News::get(['id']);
-//            return $news;
-
-//            dd("ok");
             $names = ['bad', 'good', 'excellent']; // so $result[$name[$query->review_reaction]] become $result['excellent'] or $result['good']
             $result = ['excellent' => 3, 'good' => 2, 'bad' => 1];
-            $newss = News::with('reviewsCount')->find($request->news_id);
-//            return $newss;
-            if ($newss)
-                $newss->reviewsCount->map(function ($var) use (&$result, $names) {
-                    if (isset($names[$var->review_reaction])) {
-                        $result[$names[$var->review_reaction]] = $var->reactions;
-                    }
-                });
-//            $nr=array_merge($news,$newss);
-//            return $nr;
+            $result=News::with('reviewsCountByCategory')->where('status', 'pre_validation')->get();
             return response()->json(['status' => TRUE, 'data' => $result], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error','error' => $e->getMessage()], 500);
@@ -125,9 +113,20 @@ class ReviewController extends Controller {
                 'reviewable_type' => News::class,
                 'reviewed_by'     => Auth::user()->id
             ]);
-            return response()->json(['status' => TRUE, 'data' => $result], 200);
+            return response()->json(['status' => TRUE, 'data' => $review], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error'], 500);
+        }
+    }
+
+    public function searchNews(Request $request,$title) {
+        try {
+            $result=News::with('reviewsCountByCategory')->where('status', 'pre_validation')
+                ->where('title', 'LIKE',"%$title%")
+                ->orderBy('title', 'asc')->paginate(3);
+            return NewsResource::collection($result)->additional(['status' => TRUE]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error','error' => $e->getMessage()], 500);
         }
     }
 }

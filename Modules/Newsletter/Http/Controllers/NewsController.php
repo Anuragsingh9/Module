@@ -60,10 +60,10 @@ class NewsController extends Controller {
         }
     }
 
-    public function getNewss(Request $request){
+    public function getNewss(Request $request,$status){
         try{
             DB::beginTransaction();
-            $news=$this->newsService->getNewsByStatus();
+            $news=$this->newsService->getNewsByStatus($status);
             DB::commit();
             return $news;
         }catch (\Exception $e){

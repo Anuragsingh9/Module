@@ -46,8 +46,8 @@ class NewsService {
         }
         return $news;
     }
-    public function getNewsByStatus(){
-        $news=News::where('status','=','pre_validation')->get();
+    public function getNewsByStatus($status){
+        $news=News::where('status',$status)->get();
         if (!$news) {
             throw new \Exception();
         }
@@ -119,20 +119,20 @@ class NewsService {
      * @return integer|null
      */
     public function getCurrentUserRole() {
-        $checkMeta = function ($q) {
-            $q->where('user_id', Auth::user()->id);
-            $q->where('role', '!=', 3);
-            $q->select('id', 'workshop_id', 'role');
-        };
-        $workshop = Workshop::with(['meta' => $checkMeta])
-            ->whereHas('meta', $checkMeta)
-            ->where('code1', 'NSL')
-            ->select('id', 'code1')
-            ->first();
-        if ($workshop) {
-            return $workshop->meta->first()->role;
-        }
-        return NULL;
+//        $checkMeta = function ($q) {
+//            $q->where('user_id', Auth::user()->id);
+//            $q->where('role', '!=', 3);
+//            $q->select('id', 'workshop_id', 'role');
+//        };
+//        $workshop = Workshop::with(['meta' => $checkMeta])
+//            ->whereHas('meta', $checkMeta)
+//            ->where('code1', 'NSL')
+//            ->select('id', 'code1')
+//            ->first();
+//        if ($workshop) {
+//            return $workshop->meta->first()->role;
+//        }
+//        return NULL;
     }
 
     public function getNewsByState($state) {
