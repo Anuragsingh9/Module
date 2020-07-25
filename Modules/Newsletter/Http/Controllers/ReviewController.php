@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\Newsletter\Entities\A;
+//use Modules\Newsletter\Entities\A;
 use Modules\Newsletter\Entities\News;
 use Modules\Newsletter\Entities\NewsReview;
 use Modules\Newsletter\Http\Requests\ReviewAddRequest;
@@ -57,28 +57,28 @@ class ReviewController extends Controller {
     
     public function addDescription(ReviewDescriptionRequest $request) {
         try {
-            DB::connection('tenant')->beginTransaction();
+            DB::beginTransaction();
             
             $param = ['review_text' => $request->description,];
             $review = $this->service->update($param, $request->newsId);
             
-            DB::connection('tenant')->commit();
+            DB::commit();
             return (new ReviewResource($review))->additional(['status' => TRUE]);
         } catch (\Exception $e) {
-            DB::connection('tenant')->rollback();
+            DB::rollback();
             return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error'], 500);
         }
     }
     
     public function send(ReviewSendRequest $request) {
         try {
-            DB::connection('tenant')->beginTransaction();
+            DB::beginTransaction();
             $param = ['is_visible' => 1];
             $review = $this->service->update($param, $request->news_id);
-            DB::connection('tenant')->commit();
+            DB::commit();
             return (new ReviewResource($review))->additional(['status' => TRUE]);
         } catch (\Exception $e) {
-            DB::connection('tenant')->rollback();
+            DB::rollback();
             return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error'], 200);
         }
     }
@@ -129,4 +129,6 @@ class ReviewController extends Controller {
             return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error','error' => $e->getMessage()], 500);
         }
     }
+
+
 }

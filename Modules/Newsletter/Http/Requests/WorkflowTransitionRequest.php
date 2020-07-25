@@ -18,10 +18,9 @@ class WorkflowTransitionRequest extends FormRequest {
     public function rules() {
         return [
             'news_id'         => ['required',
-                Rule::exists('tenant.news_info', 'id')
+                Rule::exists('news_info', 'id')
                     ->whereNull('deleted_at')], // using explicitly rule class to make sure not soft delete
-            'transition_name' => ['required',
-                new CheckTransitionAvailableRule($this->news_id, News::class),
+            'transition_name' => ['required'
             ]
         ];
     }

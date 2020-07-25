@@ -76,7 +76,7 @@ class NewsController extends Controller {
 
     public function update(NewsUpdateRequest $request) {
         try {
-            DB::connection('tenant')->beginTransaction();
+            DB::beginTransaction();
             $param = [
                 'title'       => $request->title,
                 'header'      => $request->header,
@@ -91,10 +91,10 @@ class NewsController extends Controller {
                 ]);
             }
             $news = $this->newsService->update($request->news_id, $param);
-            DB::connection('tenant')->commit();
+            DB::commit();
             return (new NewsResource($news))->additional(['status' => TRUE]);
         } catch (\Exception $e) {
-            DB::connection('tenant')->rollback();
+            DB::rollback();
             return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error',], 200);
         }
     }
@@ -105,13 +105,14 @@ class NewsController extends Controller {
      */
     public function applyTransition(WorkflowTransitionRequest $request) {
         try {
-            DB::connection('tenant')->beginTransaction();
-            $news = $this->newsService->applyTransition($request->news_id, $request->transition_name);
-            DB::connection('tenant')->commit();
-            return (new NewsResource($news))->additional(['status' => TRUE]);
+            DB::beginTransaction();
+//            $news=News::where('id',$request->news_id)->get();
+            $newss = $this->newsService->applyTransitions($request->news_id, $request->transition_name);
+            DB::commit();
+            return (new NewsResource($newss))->additional(['status' => TRUE]);
         } catch (\Exception $e) {
-            DB::connection('tenant')->rollback();
-            return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error', 'error' => $e->getMessage()], 200);
+            DB::rollback();
+            return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error', 'error' => $e->getTrace()], 200);
         }
     }
 
@@ -133,6 +134,21 @@ class NewsController extends Controller {
         } else {
             return response()->json(['status' => FALSE, 'data' => ''], 200);
         }
+    }
+
+    public function newsStatusCount(Request $request){
+        $status=News::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get();
+        return $status;
+
+//        $status= News::all();
+//        $validated = $status->where('status', 'validated')->count();
+//        $pre_validation = $status->where('status', 'pre_validation')->count();
+//
+//        return 'Validated : ' .  $validated .  ' Pre Validation : ' . $pre_validation;
+
+
     }
 
 

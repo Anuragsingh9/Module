@@ -6,6 +6,7 @@ use Brexis\LaravelWorkflow\Traits\WorkflowTrait;
 //use Hyn\Tenancy\Abstracts\TenantModel as TenancyModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Workflow;
 
 class News extends Model {
     use WorkflowTrait;
@@ -36,5 +37,6 @@ class News extends Model {
             )
             ->groupBy('reviewable_id');
     }
+
 
 }
