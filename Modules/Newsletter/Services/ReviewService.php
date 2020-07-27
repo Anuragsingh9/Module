@@ -54,7 +54,7 @@ class ReviewService {
     public function update($param, $newsId) {
         $review = NewsReview::where(
             ['reviewable_id'   => $newsId,
-             'reviewed_by'     => Auth::user()->id,
+             'reviewed_by'     => 1,
              'reviewable_type' => News::class
             ])->first();
         if (!$review->update($param)) throw new Exception();

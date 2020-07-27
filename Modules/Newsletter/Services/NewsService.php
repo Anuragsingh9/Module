@@ -110,7 +110,7 @@ class NewsService {
     public function applyTransitions($newsId, $transitionName) {
         $news = News::findOrFail($newsId);
 //        $workflow = $news->workflow_get();
-        $workflow = Workflow::get($news);
+        $workflow = Workflow::get($news,'news_status');
 //        dd($workflow);
         $workflow->apply($news, $transitionName);
         $news->save();

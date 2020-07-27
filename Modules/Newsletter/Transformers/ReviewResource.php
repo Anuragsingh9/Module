@@ -14,9 +14,13 @@ class ReviewResource extends Resource {
      */
     public function toArray($request) {
         return [
-            'news'=>    $this->news,
+
+            'news'            => new NewsResource($this->reviewable),
             'review_id'       => $this->id,
-            'review_reaction' => $this->reviewsCountByCategory,
+            'review_text'     => $this->review_text,
+            'review_reaction' => $this->review_reaction,
+            'is_visible'      => $this->is_visible,
+            'reviewed_by'     => new UserResource($this->reviewer),
         ];
     }
 }

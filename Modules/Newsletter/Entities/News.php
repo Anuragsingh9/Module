@@ -6,7 +6,7 @@ use Brexis\LaravelWorkflow\Traits\WorkflowTrait;
 //use Hyn\Tenancy\Abstracts\TenantModel as TenancyModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Workflow;
+//use Workflow;
 
 class News extends Model {
     use WorkflowTrait;
@@ -35,6 +35,20 @@ class News extends Model {
                 DB::raw("COUNT(CASE WHEN review_reaction=2 THEN 1 ELSE NULL END) as review_average"),
                 DB::raw("COUNT(CASE WHEN review_reaction=3 THEN 1 ELSE NULL END) as review_good")
             )
+            ->groupBy('reviewable_id');
+    }
+
+    public function reviewsCountByvisible() {
+        return $this->morphMany(NewsReview::class, 'reviewable')
+//
+            ->select(
+                'reviewable_id',
+                DB::raw("COUNT(CASE WHEN review_reaction=1 THEN 1 ELSE NULL END) as review_bad"),
+                DB::raw("COUNT(CASE WHEN review_reaction=2 THEN 1 ELSE NULL END) as review_average"),
+                DB::raw("COUNT(CASE WHEN review_reaction=3 THEN 1 ELSE NULL END) as review_good"),
+
+
+            )->where('is_visible','=',1)
             ->groupBy('reviewable_id');
     }
 

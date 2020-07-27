@@ -16,9 +16,9 @@ class ReviewSendRequest extends FormRequest {
         return [
             'news_id' => [
                 'required',
-                Rule::exists('tenant.news_info', 'id')->whereNull('deleted_at'),
-                Rule::exists('tenant.news_reviews', 'reviewable_id')->where(function ($q) {
-                    $q->where('reviewed_by', Auth::user()->id);
+                Rule::exists('news_info', 'id')->whereNull('deleted_at'),
+                Rule::exists('news_reviews', 'reviewable_id')->where(function ($q) {
+                    $q->where('reviewed_by', '1');
                     $q->where('reviewable_type', News::class);
                 })
             ],
@@ -29,16 +29,16 @@ class ReviewSendRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
-        if (!in_array(Auth::user()->role, ['M1', 'M0'])) {
-            if ($this->review_id) {
-                $review = NewsReview::find($this->review_id);
-                if ($review) { // do not combine these if with && sign
-                    if ($review->reviewed_by != Auth::user()->id) {
-                        return FALSE;
-                    }
-                }
-            }
-        }
+//        if (!in_array(Auth::user()->role, ['M1', 'M0'])) {
+//            if ($this->review_id) {
+//                $review = NewsReview::find($this->review_id);
+//                if ($review) { // do not combine these if with && sign
+//                    if ($review->reviewed_by != Auth::user()->id) {
+//                        return FALSE;
+//                    }
+//                }
+//            }
+//        }
         return TRUE;
     }
 }

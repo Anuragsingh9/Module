@@ -9,7 +9,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'newsletter', 'namespace' => 'M
         Route::get('getnewss/{status}','NewsController@getNewss');
         Route::get('getnews/status','NewsController@newsStatusCount');
 //        Route::put('update', 'NewsController@update');
-        Route::put('transition', 'NewsController@applyTransition');
+//        Route::get('transition', 'NewsController@applyTransition');
 //        Route::get('counts', 'NewsController@getCounts'); // to get the counts of news when click on news management
 //        Route::get('state', 'NewsController@getNews');
 
@@ -20,8 +20,9 @@ Route::group(['middleware' => 'web', 'prefix' => 'newsletter', 'namespace' => 'M
             Route::get('searchNews/{title}','ReviewController@searchNews');
 
 //            Route::put('review/update/description', 'ReviewController@addDescription'); // form request
-//            Route::put('review/update/send', 'ReviewController@send'); // form request
+            Route::put('review/update/send', 'ReviewController@send'); // form request
             Route::get('review/count', 'ReviewController@getReviewsCount');
+            Route::get('review/count/vissible','ReviewController@countReviewBySent');
         });
     });
 });

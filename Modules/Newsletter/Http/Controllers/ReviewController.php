@@ -97,8 +97,6 @@ class ReviewController extends Controller {
     
     public function getReviewsCount(Request $request) {
         try {
-            $names = ['bad', 'good', 'excellent']; // so $result[$name[$query->review_reaction]] become $result['excellent'] or $result['good']
-            $result = ['excellent' => 3, 'good' => 2, 'bad' => 1];
             $result=News::with('reviewsCountByCategory')->where('status', 'pre_validation')->get();
             return response()->json(['status' => TRUE, 'data' => $result], 200);
         } catch (\Exception $e) {
@@ -121,7 +119,7 @@ class ReviewController extends Controller {
 
     public function searchNews(Request $request,$title) {
         try {
-            $result=News::with('reviewsCountByCategory')->where('status', 'pre_validation')
+            $result=News::with('reviewsCountByvisible')
                 ->where('title', 'LIKE',"%$title%")
                 ->orderBy('title', 'asc')->paginate(3);
             return NewsResource::collection($result)->additional(['status' => TRUE]);
@@ -130,5 +128,13 @@ class ReviewController extends Controller {
         }
     }
 
+    public function countReviewBySent(Request $request) {
+        try {
+            $result=News::with('reviewsCountByvisible')->get();
+            return response()->json(['status' => TRUE, 'data' => $result], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => FALSE, 'msg' => 'Internal Server Error','error' => $e->getMessage()], 500);
+        }
+    }
 
 }

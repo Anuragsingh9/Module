@@ -103,7 +103,7 @@ class NewsController extends Controller {
      * @param WorkflowTransitionRequest $request
      * @return JsonResponse|NewsResource
      */
-    public function applyTransition(WorkflowTransitionRequest $request) {
+    public function applyTransition(Request $request) {
         try {
             DB::beginTransaction();
 //            $news=News::where('id',$request->news_id)->get();

@@ -6,6 +6,7 @@ use App\User;
 //use Hyn\Tenancy\Abstracts\TenantModel as TenancyModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class NewsReview extends Model {
     use SoftDeletes;
@@ -28,4 +29,5 @@ class NewsReview extends Model {
     public function reviewer() {
         return $this->hasOne(User::class, 'id', 'reviewed_by');
     }
+
 }
